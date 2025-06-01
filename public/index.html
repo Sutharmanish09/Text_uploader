@@ -3,28 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple File Uploader</title>
+    <title>Modern File Uploader</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .upload-form {
-            max-width: 400px;
-            margin: auto;
+
+        .upload-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .upload-form input[type="file"] {
+
+        .upload-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h2 {
+            color: #333;
             margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .upload-form {
+            position: relative;
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 30px 20px;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            color: #667eea;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-label:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+            color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .file-input-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .file-input-label:hover::before {
+            left: 100%;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .upload-btn:active {
+            transform: translateY(0);
+        }
+
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .upload-btn:hover::before {
+            left: 100%;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            color: #333;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-top: 15px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .upload-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .file-input-label {
+                padding: 25px 15px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="upload-form">
-        <h2>Upload a Text File</h2>
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".txt" required>
-            <button type="submit">Upload</button>
+    <div class="upload-container">
+        <div class="upload-icon">📁</div>
+        <h2>Upload Your File</h2>
+        <p class="subtitle">Select a text file to upload</p>
+        
+        <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="file-input-container">
+                <input type="file" name="file" accept=".txt" required class="file-input" id="fileInput">
+                <label for="fileInput" class="file-input-label">
+                    <span class="file-icon">📄</span>
+                    <span class="label-text">Click to browse or drag & drop your file here</span>
+                </label>
+            </div>
+            
+            <div class="file-info" id="fileInfo"></div>
+            
+            <button type="submit" class="upload-btn">
+                <span>Upload File</span>
+            </button>
+            
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                ✅ File uploaded successfully!
+            </div>
         </form>
     </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const labelText = document.querySelector('.label-text');
+        const uploadBtn = document.querySelector('.upload-btn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const successMessage = document.getElementById('successMessage');
+        const form = document.querySelector('.upload-form');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileSize = (file.size / 1024).toFixed(2);
+                fileInfo.innerHTML = `
+                    <strong>Selected:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${fileSize} KB<br>
+                    <strong>Type:</strong> ${file.type || 'text/plain'}
+                `;
+                fileInfo.style.display = 'block';
+                labelText.textContent = '✓ File selected - Choose another or upload';
+                uploadBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            }
+        });
+
+        // Drag and drop functionality
+        const label = document.querySelector('.file-input-label');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            label.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            label.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            label.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            label.style.borderColor = '#4CAF50';
+            label.style.background = 'rgba(76, 175, 80, 0.1)';
+            label.style.transform = 'scale(1.02)';
+        }
+
+        function unhighlight(e) {
+            label.style.borderColor = '#667eea';
+            label.style.background = 'rgba(102, 126, 234, 0.05)';
+            label.style.transform = 'scale(1)';
+        }
+
+        label.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            
+            // Trigger change event
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
+        }
+
+        // Form submission with progress animation
+        form.addEventListener('submit', function(e) {
+            if (fileInput.files.length > 0) {
+                progressBar.style.display = 'block';
+                uploadBtn.disabled = true;
+                uploadBtn.innerHTML = '<span>Uploading...</span>';
+                
+                // Simulate progress (remove this in real implementation)
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            successMessage.style.display = 'block';
+                            uploadBtn.innerHTML = '<span>Upload Complete!</span>';
+                        }, 500);
+                    }
+                    progressFill.style.width = progress + '%';
+                }, 200);
+            }
+        });
+    </script>
 </body>
 </html>
