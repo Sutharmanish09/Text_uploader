@@ -316,12 +316,22 @@
 
         // Form submission with progress animation
         form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission for demo
+            
             if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
                 progressBar.style.display = 'block';
                 uploadBtn.disabled = true;
                 uploadBtn.innerHTML = '<span>Uploading...</span>';
                 
-                // Simulate progress (remove this in real implementation)
+                // Store file details for success page
+                sessionStorage.setItem('uploadedFileName', file.name);
+                sessionStorage.setItem('uploadedFileSize', (file.size / 1024).toFixed(2) + ' KB');
+                sessionStorage.setItem('uploadedFileType', file.type || 'text/plain');
+                sessionStorage.setItem('uploadTime', new Date().toLocaleString());
+                
+                // Simulate progress
                 let progress = 0;
                 const interval = setInterval(() => {
                     progress += Math.random() * 15;
@@ -329,8 +339,8 @@
                         progress = 100;
                         clearInterval(interval);
                         setTimeout(() => {
-                            successMessage.style.display = 'block';
-                            uploadBtn.innerHTML = '<span>Upload Complete!</span>';
+                            // Redirect to success page
+                            window.location.href = 'upload-success.html';
                         }, 500);
                     }
                     progressFill.style.width = progress + '%';

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Successful</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #2e7d32 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 20px; height: 20px; left: 10%; top: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 15px; height: 15px; left: 20%; top: 80%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 25px; height: 25px; left: 80%; top: 10%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 18px; height: 18px; left: 70%; top: 70%; animation-delay: 3s; }
+        .particle:nth-child(5) { width: 12px; height: 12px; left: 50%; top: 30%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+        }
+
+        .success-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .success-icon {
+            font-size: 6rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #4CAF50;
+            stroke-miterlimit: 10;
+            margin: 0 auto 30px;
+            box-shadow: inset 0px 0px 0px #4CAF50;
+            animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+        }
+
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke-miterlimit: 10;
+            stroke: #4CAF50;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px #4CAF50;
+            }
+        }
+
+        h1 {
+            color: #2e7d32;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .subtitle {
+            color: #4CAF50;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .file-details {
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+        }
+
+        .file-details h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.1);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.9s both;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .upload-time {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            animation: fadeInUp 0.8s ease-out 1.1s both;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(odd) {
+            background: #FFD700;
+            animation-delay: 0.5s;
+        }
+
+        .confetti:nth-child(even) {
+            background: #FF6B6B;
+            animation-delay: 1s;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .success-container {
+                padding: 40px 25px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .success-icon {
+                font-size: 4rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <div class="success-container">
+        <!-- Animated checkmark -->
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark__check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+
+        <h1>Upload Successful!</h1>
+        <p class="subtitle">Your file has been uploaded successfully</p>
+
+        <div class="file-details">
+            <h3>📄 File Details</h3>
+            <div class="detail-item">
+                <span class="detail-label">File Name:</span>
+                <span class="detail-value" id="fileName">document.txt</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">File Size:</span>
+                <span class="detail-value" id="fileSize">2.5 KB</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">File Type:</span>
+                <span class="detail-value" id="fileType">Text Document</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Upload Status:</span>
+                <span class="detail-value">✅ Complete</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="#" class="btn btn-primary" onclick="uploadAnother()">Upload Another File</a>
+            <a href="#" class="btn btn-secondary" onclick="goHome()">Back to Home</a>
+        </div>
+
+        <div class="upload-time">
+            Uploaded on <span id="uploadTime"></span>
+        </div>
+    </div>
+
+    <script>
+        // Set current time and file details from upload
+        window.addEventListener('load', function() {
+            // Get file details from sessionStorage (passed from upload page)
+            const fileName = sessionStorage.getItem('uploadedFileName') || 'document.txt';
+            const fileSize = sessionStorage.getItem('uploadedFileSize') || '2.5 KB';
+            const fileType = sessionStorage.getItem('uploadedFileType') || 'text/plain';
+            const uploadTime = sessionStorage.getItem('uploadTime') || new Date().toLocaleString();
+            
+            // Update the display
+            updateFileDetails(fileName, fileSize, getFileTypeDisplay(fileType));
+            document.getElementById('uploadTime').textContent = uploadTime;
+            
+            // Clear the stored data
+            sessionStorage.removeItem('uploadedFileName');
+            sessionStorage.removeItem('uploadedFileSize');
+            sessionStorage.removeItem('uploadedFileType');
+            sessionStorage.removeItem('uploadTime');
+        });
+        
+        function getFileTypeDisplay(mimeType) {
+            const typeMap = {
+                'text/plain': 'Text Document',
+                'text/html': 'HTML Document',
+                'text/css': 'CSS Stylesheet',
+                'text/javascript': 'JavaScript File',
+                'application/json': 'JSON File',
+                'text/xml': 'XML Document'
+            };
+            return typeMap[mimeType] || 'Text File';
+        }
+
+        // Add confetti effect
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    confetti.style.opacity = Math.random();
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 50);
+            }
+        }
+
+        // Trigger confetti on page load
+        window.addEventListener('load', () => {
+            setTimeout(createConfetti, 1000);
+        });
+
+        // Button functions
+        function uploadAnother() {
+            // Go back to the upload page
+            window.location.href = 'index.html'; // or whatever you named your upload page
+        }
+
+        function goHome() {
+            // Go to home page or back to upload page
+            window.location.href = 'index.html'; // or your actual home page
+        }
+
+        // Dynamic file details (you can populate these from your backend)
+        function updateFileDetails(fileName, fileSize, fileType) {
+            document.getElementById('fileName').textContent = fileName;
+            document.getElementById('fileSize').textContent = fileSize;
+            document.getElementById('fileType').textContent = fileType;
+        }
+
+        // Example usage:
+        // updateFileDetails('my-document.txt', '3.2 KB', 'Plain Text');
+    </script>
+</body>
+</html>
